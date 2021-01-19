@@ -1,5 +1,6 @@
 # Python exercise 0
-import re, sys
+from sys import argv
+import re
 
 class FileManager(): 
     def __init__(self, filename, mode): 
@@ -38,30 +39,48 @@ def writeResults(outputfile,result):
 
     checkFile(f)
 
+def addLeadingZeroToNumber(number):
+    return str(0)+str(number)
+
+def getInput():
+    while True:
+        try:
+            hour=int(input("Please, define the desired hour to find the correct lines in the log file."))
+        except ValueError:
+            print("Invalid input. Only int type is acceptable.")
+            continue
+        else:
+            if len(str(hour)) < 2:
+                hour=addLeadingZeroToNumber(hour)
+                break
+            elif hour < 13:
+                break
+            else:
+                continue
+
+    return str(hour)
+
 def main():
 
     result = [""]
-    if len(sys.argv) != 3:
+    if len(argv) != 3:
         print("Please, provide an input and an output file as an argument: script <in> <out>")
-        sys.exit()   
+        exit()
     else:
-        logFilePath=str(sys.argv[1])
-        resultFilePath=str(sys.argv[2])
+        logFilePath=str(argv[1])
+        resultFilePath=str(argv[2])
 
-    print(f"Number of arguments: {len(sys.argv)}")
-    print(f"Arguments: {str(sys.argv)}")
+    print(f"Number of arguments: {len(argv)}")
+    print(f"Arguments: {str(argv)}")
     print(f"Input file: {logFilePath}")
-    print(f"Output file: {resultFilePath}")
+    print(f"Output file: {resultFilePath}" )
 
-    regexp=re.compile('[a-zA-Z]+(?=\s\d)\s\d+\s08:[0-5]\d:[0-5]\d')
+    hour=getInput()
+    regexp=re.compile(f'[a-zA-Z]+(?=\s\d)\s\d+\s{hour}:[0-5]\d:[0-5]\d')
 
+    print(f"Looking for logs at {hour} hour")
     getMatchingLines(logFilePath,regexp,result)
     writeResults(resultFilePath,result)
 
 if __name__ == '__main__':
     main()
-
-
-
-
-
